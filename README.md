@@ -1,6 +1,8 @@
 # RGStraP
 **RGStraP** (***R***NA-seq-based ***G***enetic ***Stra***tification ***P***Cs) is a bioinformatics pipeline for calculating Principal Components (PCs) showing genetic stratification from RNA-seq data. The pipeline mainly utilizes the variant calling capabilities of [GATK4](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-) and the principal component analysis (PCA) of [FlashPCA](https://github.com/gabraham/flashpca).
 
+![RNAvc_Figure1](https://user-images.githubusercontent.com/30294080/156269248-866ae75a-5ac2-4643-a443-c56a8286ecd9.png)
+
 ## Requirements
 
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
