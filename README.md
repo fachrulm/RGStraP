@@ -16,13 +16,13 @@ scripts: Script files for different parts of the pipeline.
 ## Requirements
 [![Snakemake](https://img.shields.io/badge/snakemake-≥5.6.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
 
-- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-- [Trim galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
+- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) v0.11.8
+- [Trim galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) v0.6.0
 - [BBMap](https://github.com/BioInfoTools/BBMap) (for Clumpify.sh) 
-- [STAR](https://github.com/alexdobin/STAR)
-- [Picard](https://broadinstitute.github.io/picard/)
-- [Samtools](http://www.htslib.org/)
-- [GATK4](https://gatk.broadinstitute.org/hc/en-us/articles/360036194592-Getting-started-with-GATK4)
-- [PLINK 1.9](https://www.cog-genomics.org/plink/)
-- [FlashPCA2](https://github.com/gabraham/flashpca)
+- [STAR](https://github.com/alexdobin/STAR) v2.7.10a
+- [Picard](https://broadinstitute.github.io/picard/) v2.24.0
+- [Samtools](http://www.htslib.org/) v1.8
+- [GATK4](https://gatk.broadinstitute.org/hc/en-us/articles/360036194592-Getting-started-with-GATK4) v4.0.6.0
+- [PLINK 1.9](https://www.cog-genomics.org/plink/) v1.90b6.16
+- [FlashPCA](https://github.com/gabraham/flashpca) v2.0
 
