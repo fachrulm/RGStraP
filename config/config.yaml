@@ -29,7 +29,7 @@ hapmap3: ./config/lifted_37to38_hapmap3_clean_maf001_noHLA.txt
 ## List of high LD regions for GRCh38
 ld_regions: ./config/noChr_high-LD-regions-hg38-GRCh38.txt
 
-## Path to tools (we may implement built-in dependencies in te future):
+## Path to tools (we may implement built-in dependencies in the future):
 fastqc: {path to tool file}
 trimgalore: {path to tool file}
 bbmap: {path to tool directory}
