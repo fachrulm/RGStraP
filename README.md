@@ -8,11 +8,6 @@ Muhamad Fachrul, [mfachrul@student.unimelb.edu.au](mailto:mfachrul@student.unime
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/f_azr?style=social&logo=twitter)](https://twitter.com/f_azr)
 
-## Directory Contents
-config: Configuration files necessary for the snakemake pipeline to run (the main one being config.yaml, which needs to be edited according to your input files).
-
-scripts: Script files for different parts of the pipeline.
-
 ## Requirements
 [![Snakemake](https://img.shields.io/badge/snakemake-≥5.6.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
 
@@ -26,3 +21,13 @@ scripts: Script files for different parts of the pipeline.
 - [PLINK 1.9](https://www.cog-genomics.org/plink/) v1.90b6.16
 - [FlashPCA](https://github.com/gabraham/flashpca) v2.0
 
+## How to use
+### Setup conda environment
+- Download and install miniconda or mamba forge
+- Prepare working directory
+- Create environment with dependencies
+- Activate environment
+### Running the pipeline
+- Fill config file with paths to your file
+
+- Option for slurm
