@@ -61,3 +61,4 @@ snakemake -n
 # To run pipeline on slurm
 snakemake --profile slurm
 ```
+

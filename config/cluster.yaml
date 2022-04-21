@@ -1,0 +1,64 @@
+# cluster_config.yml - cluster configuration
+
+__default__:
+  partition: _partition1_
+  nodes: 1
+  cpus-per-task: 1
+  threads-per-core: 2
+  mem: "4g"
+
+pre_QC:
+  mem: "6g"
+  cpus-per-task: {threads}
+
+clumpify:
+  mem: "20g"
+  cpus-per-task: {threads}
+
+onePass_STAR:
+  mem: "100g"
+  cpus-per-task: {threads} 
+
+twoPass_STAR:
+  mem: "100g"
+  cpus-per-task: {threads}
+
+addRG:
+  mem: "20g"
+  cpus-per-task: {threads}
+
+filterBAM:
+  mem: "5g"
+  cpus-per-task: {threads}
+
+sortMarkDup:
+  mem: "30g"
+  cpus-per-task: {threads}
+
+splitN:
+  mem: "20g"
+  cpus-per-task: {threads}
+
+baseRecalib:
+  mem: "20g"
+  cpus-per-task: {threads}
+
+applybqsr:
+  mem: "40g"
+  cpus-per-task: {threads}
+
+haploCall:
+  mem: "50g"
+  cpus-per-task: {threads}
+
+genotype:
+  mem: "50g"
+  cpus-per-task: {threads}
+
+filGen:
+  mem: "20g"
+  cpus-per-task: {threads}
+
+selGen:
+  mem: "20g"
+  cpus-per-task: {threads}

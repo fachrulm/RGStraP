@@ -1,0 +1,20 @@
+cluster:
+        mkdir -p logs/{rule}/ &&
+        sbatch
+          --partition={cluster.partition}
+          --cpus-per-task={threads}
+          --mem={cluster.mem}
+          --output=logs/{rule}/{rule}_{jobid}.out
+          --error=logs/{rule}/{rule}_{jobid}.err
+
+cluster-config: "config/cluster.yaml"
+cluster-status: "slurm/slurm-status.py"
+jobs: 10
+latency-wait: 90
+local-cores: 8
+max-jobs-per-second: 5
+restart-times: 1
+rerun-incomplete: True
+printshellcmds: True
+use-conda: True
+conda-frontend: mamba
