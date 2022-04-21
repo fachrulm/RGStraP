@@ -51,4 +51,13 @@ conda deactivate
   - Path to reference genome fasta file.
   - Path to indel files (for GATK's BaseRecalibrator).
   - Path to flashpca.
-- Option for slurm
+- Test the pipeline by performing a dry-run.
+```
+snakemake -n
+```
+- Running the pipeline on a cluster using a workload manager / job scheduler, such as [slurm](https://slurm.schedmd.com/documentation.html), is highly recommended. A snakemake profile to run it on slurm is included.
+  - Please modify the partition name in `config/cluster.yaml` file accordingly.
+```
+# To run pipeline on slurm
+snakemake --profile slurm
+```
