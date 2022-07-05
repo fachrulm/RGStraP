@@ -11,7 +11,7 @@ latency-wait: 60
 rerun-incomplete: True
 
 default-resources:
-  - partition=sysgen_long
+  - partition=<insert your own partition>
   - mem_mb=4000
 
 # Example resource configuration

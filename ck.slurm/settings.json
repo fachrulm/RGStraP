@@ -1,5 +1,5 @@
 {
-    "SBATCH_DEFAULTS": "partition=sysgen_long output=logs/{rule}/{rule}-{name}-%j.out error=logs/{rule}/{rule}-{name}-%j.err",
+    "SBATCH_DEFAULTS": "output=logs/{rule}/{rule}-{name}-%j.out error=logs/{rule}/{rule}-{name}-%j.err",
     "CLUSTER_NAME": "",
     "CLUSTER_CONFIG": ""
 }
