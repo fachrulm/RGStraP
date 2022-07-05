@@ -61,10 +61,10 @@ conda deactivate
 ```
 snakemake -n
 ```
-- Running the pipeline on a cluster using a workload manager / job scheduler, such as [slurm](https://slurm.schedmd.com/documentation.html), is highly recommended. A snakemake profile to run it on slurm is included.
+- Running the pipeline on a cluster using a workload manager / job scheduler, such as [slurm](https://slurm.schedmd.com/documentation.html), is highly recommended. An example of a snakemake profile to run it on slurm is included, following [this CookieCutter example](https://github.com/Snakemake-Profiles/slurm).
   - Please modify the partition name in `slurm/config.yaml` file accordingly.
 ```
 # To run pipeline on slurm
-snakemake --profile slurm
+snakemake --profile ck.slurm
 ```
 
