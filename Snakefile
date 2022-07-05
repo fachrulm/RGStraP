@@ -58,6 +58,9 @@ rule pre_QC:
         fqc_html = "fastqc/{name}1_fastqc.html",
 	trimmed_1 = "trimmed/{name}1_val_1.fq.gz",
         trimmed_2 = "trimmed/{name}2_val_2.fq.gz"
+
+    resources:
+        mem_mb=6000
         
     threads: 4
         
@@ -75,7 +78,10 @@ rule clumpify:
     output:
         clumped_1 = "no_OpDup/{name}1_val_1_clumped.fq.gz",
         clumped_2 = "no_OpDup/{name}2_val_2_clumped.fq.gz"
-   
+
+    resources:
+        mem_mb=20000  
+ 
     threads: 4
        
     shell:
@@ -92,7 +98,10 @@ rule onePass_STAR:
         pass1_bam = "1_mapped/{name}Aligned.sortedByCoord.out.bam",
         pass1_sj = "1_mapped/{name}SJ.out.tab",
         pass1_finLog = "1_mapped/{name}Log.final.out"
-       
+
+    resources:
+        mem_mb=100000      
+ 
     params:
         genome = config["STAR_genome"]
 
@@ -114,6 +123,9 @@ rule twoPass_STAR:
         pass2_sj = "2_mapped/{name}SJ.out.tab",
         pass2_finLog = "2_mapped/{name}Log.final.out"
 
+    resources:
+        mem_mb=100000
+
     params:
         genome = config["STAR_genome"]
 
@@ -132,6 +144,9 @@ rule addRG:
     output:
         withRG = "addRG/{name}withRG.bam"
 
+    resources:
+        mem_mb=20000
+
     params:
         meta = config["meta"]
  
@@ -149,6 +164,9 @@ rule filterBAM:
     output:
         filt = "addRG/{name}withRG_filtered.bam"
 
+    resources:
+        mem_mb=5000
+
     threads: 8
 
     shell:
@@ -163,6 +181,9 @@ rule sortMarkDup:
     output:
         nodup = "nodup/{name}withRG_filtered_marked.bam"
 
+    resources:
+        mem_mb=30000
+
     threads: 8
 
     shell:
@@ -176,6 +197,9 @@ rule splitN:
 
     output:
         ncigar = "NCIGAR/{name}withRG_filtered_marked_splitN.bam"
+
+    resources:
+        mem_mb=20000
 
     params:
         genome_fa = config["genome_fa"]
@@ -194,6 +218,9 @@ rule baseRecalib:
 
     output:
         recaltab = "bqsr/{name}recal.table"
+
+    resources:
+        mem_mb=20000
 
     params:
         genome_fa = config["genome_fa"],
@@ -216,6 +243,9 @@ rule applybqsr:
     output:
         finalbam = "bqsr/{name}final.bam"
 
+    resources:
+        mem_mb=40000
+
     params:
         genome_fa = config["genome_fa"]
 
@@ -233,6 +263,9 @@ rule haploCall:
 
     output:
         "vars/{name}first.g.vcf.gz"
+
+    resources:
+        mem_mb=50000
 
     params:
         genome_fa = config["genome_fa"]
@@ -264,6 +297,9 @@ rule genotype:
     output:
         genotyped = "VCF/Genotyped_raw.vcf.gz"
 
+    resources:
+        mem_mb=50000
+
     params:
         genome_fa = config["genome_fa"],
         interval = config["interval"]
@@ -283,6 +319,9 @@ rule filGen:
     output:
         varFil = "VCF/Genotyped_filterKeep.vcf.gz"
 
+    resources:
+        mem_mb=20000
+
     params:
         genome_fa = config["genome_fa"]
 
@@ -300,6 +339,9 @@ rule selGen:
 
     output:
         varSel = "VCF/Genotyped_filterOut.vcf.gz"
+
+    resources:
+        mem_mb=20000
 
     params:
         genome_fa = config["genome_fa"]
