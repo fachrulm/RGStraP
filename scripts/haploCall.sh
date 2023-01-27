@@ -1,7 +1,6 @@
 #!/bin/bash
 
 ##JAVA VERSION 1.8 NEEDED, PLS SOURCE PROFILE
-#source ~/.bash_profile
 
 mkdir -p ./vars
 
@@ -10,7 +9,7 @@ file=${bam##*/}
 genome=$2
 
 #HaplotypeCaller
-gatk4 HaplotypeCaller \
+gatk HaplotypeCaller \
 	-R $genome \
 	-I $bam \
 	-ERC GVCF \

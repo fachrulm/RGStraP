@@ -1,5 +1,4 @@
 #!/bin/bash
-#source /usr/bin/java
 
 # -I input.bam #the input file has read groups added and must be coordinate sorted
 # -O output.bam file with duplicates marked

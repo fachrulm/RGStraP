@@ -13,6 +13,6 @@ mkdir -p ./no_OpDup
 
 sname=${p1##*/}
 echo "Removing optical duplicate from ${sname%%_1_val_1.fq.gz} samples"
-clumpify.sh in1=$p1 in2=${p1%%_1_val_1.fq.gz}_2_val_2.fq.gz \
+clumpify.sh -Xmx55G in1=$p1 in2=${p1%%_1_val_1.fq.gz}_2_val_2.fq.gz \
 	out1=./no_OpDup/${sname%.fq.gz}_clumped.fq.gz out2=./no_OpDup/${sname%%_1_val_1.fq.gz}_2_val_2_clumped.fq.gz \
-	dedupe allduplicates optical=t dupedist=12000 subs=0 spantiles=f
+	dedupe allduplicates optical=t dupedist=40 subs=0 spantiles=f

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 ##JAVA VERSION 1.8 NEEDED, PLS SOURCE PROFILE
-#source ~/.bash_profile
 
 mkdir -p ./VCF
 
@@ -9,7 +8,7 @@ vcf=$1
 genome=$2
 
 #Genotype GVCFs
-gatk4 VariantFiltration \
+gatk VariantFiltration \
 	-R $genome \
 	-V $vcf \
 	--filter-expression "QD < 2.0" --filter-name "QDfilterLessThan2" \
