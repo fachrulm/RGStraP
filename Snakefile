@@ -9,8 +9,14 @@ configfile: "config/config.yaml"
 # Get sample name and initial directory    
 fastq_list = pd.read_csv(config["sample_fq_list"], header=None, index_col=False, squeeze = True)
 SAMPLES = fastq_list.str.rsplit('/', 1, expand=True).rename(columns={0: "dir",1: "name"})
-SAMPLES["ext"] = SAMPLES["name"].str.rsplit('.', 2, expand=True)[1]
+SAMPLES["ext"] = SAMPLES["name"].str.split('.', 1, expand=True)[1]
 SAMPLES["name"] = SAMPLES["name"].str.rsplit('1.f', 1, expand=True)[0]
+
+# create folder for cluster use
+onstart:
+    print("##### Creating profile pipeline #####\n") 
+    print("\t Creating jobs output folder...\n")
+    shell("mkdir -p jobs/")
 
 # Paths to 
 
@@ -52,7 +58,7 @@ rule all:
 # Run QC before mapping (fastqc and trimming adapters)
 rule pre_QC:
     input:
-        p1_raw = SAMPLES["dir"][0]+"/{name}1."+SAMPLES["ext"][0]+".gz"
+        p1_raw = SAMPLES["dir"][0]+"/{name}1."+SAMPLES["ext"][0]
     output:
         fqc_zip = "fastqc/{name}1_fastqc.zip",
         fqc_html = "fastqc/{name}1_fastqc.html",
@@ -80,7 +86,7 @@ rule clumpify:
         clumped_2 = "no_OpDup/{name}2_val_2_clumped.fq.gz"
 
     resources:
-        mem_mb=20000  
+        mem_mb=60000  
  
     threads: 4
        
@@ -208,7 +214,6 @@ rule splitN:
 
     shell:
         """
-        source ~/.bash_profile
         sh scripts/splitncigar.sh {input.nodup} {params.genome_fa}
         """
 
@@ -231,7 +236,6 @@ rule baseRecalib:
 
     shell:
         """
-        source ~/.bash_profile
         sh scripts/base_recalibrator.sh {input.nodup} {params.genome_fa} {params.indel1} {params.indel2}
         """
 
@@ -253,7 +257,6 @@ rule applybqsr:
 
     shell:
         """
-        source ~/.bash_profile
         sh scripts/apply_bqsr.sh {input.nodup} {params.genome_fa} {input.recaltab}
         """
 
@@ -274,7 +277,6 @@ rule haploCall:
 
     shell:
         """
-        source ~/.bash_profile
         sh scripts/haploCall.sh {input.finalbam} {params.genome_fa}
         """
 
@@ -308,7 +310,6 @@ rule genotype:
 
     shell:
         """
-        source ~/.bash_profile
         sh scripts/genotypegvcfs.sh {input.gvcf_list} {params.genome_fa} {params.interval}
         """
 
@@ -329,7 +330,6 @@ rule filGen:
 
     shell:
         """
-        source ~/.bash_profile
         sh scripts/variantFil.sh {input.genotyped} {params.genome_fa}
         """
 
@@ -350,7 +350,6 @@ rule selGen:
 
     shell:
         """
-        source ~/.bash_profile
         sh scripts/variantSel.sh {input.varFil} {params.genome_fa}
         """
 
