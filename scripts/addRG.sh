@@ -11,9 +11,11 @@
 
 bam=$1 #BAM file
 sname=${bam##*/} #without directory
+base="${sname%_Al*}"
+echo "$base"
 
 meta=$2 #read group information, file needs to be ordered the same with list of BAM files
-RGinfo=$(grep "${sname%_Al*}" $meta | sed 's/.*.bam //g') #get relevant RG info per sample
+RGinfo=$(grep $base $meta | sed 's/.*.bam\t//g') #get relevant RG info per sample
 
 addRG=$3 #script to run the operation per sample
 
