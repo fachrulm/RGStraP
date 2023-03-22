@@ -47,10 +47,10 @@ rule all:
         varSel = "VCF/Genotyped_filterOut.vcf.gz",
         bim_pre = "VCF/Genotyped_filterOut.bim",
         bim_clean = "VCF/Genotyped_filterOut_clean.bim",
-        bim_maf = "VCF/Genotyped_filterOut_clean_maf001.bim",
-        hm3_list = "VCF/overlap_maf001_hapmap3_RNA_SNPs.list",
-        hm3_bim = "VCF/Genotyped_filterOut_clean_maf001_hm3.bim",
-        ld_bim = "VCF/Genotyped_filterOut_clean_maf001_hm3_ld005.bim",
+        bim_maf = "VCF/Genotyped_filterOut_clean_maf005.bim",
+        hm3_list = "VCF/overlap_maf005_hapmap3_RNA_SNPs.list",
+        hm3_bim = "VCF/Genotyped_filterOut_clean_maf005_hm3.bim",
+        ld_bim = "VCF/Genotyped_filterOut_clean_maf005_hm3_ld005.bim",
         pcs = "VCF/RG-StraP_pcs.txt",
         eigenvalues = "VCF/RG-StraP_eigenvalues.txt"
     output: touch("all.done")
@@ -300,7 +300,8 @@ rule genotype:
         genotyped = "VCF/Genotyped_raw.vcf.gz"
 
     resources:
-        mem_mb=50000
+        mem_mb=80000,
+        runtime="48h"
 
     params:
         genome_fa = config["genome_fa"],
@@ -375,13 +376,13 @@ rule qc_plink:
         bim_clean = rules.plink_clean.output.bim_clean
         
     output:
-        bim_maf = "VCF/Genotyped_filterOut_clean_maf001.bim"
+        bim_maf = "VCF/Genotyped_filterOut_clean_maf005.bim"
 
     threads: 1
 
     shell:
         """
-        sh scripts/qc_all_basic.sh VCF/Genotyped_filterOut_clean VCF/Genotyped_filterOut_clean_maf001 0.01 0 0.1 0.2
+        sh scripts/qc_all_basic.sh VCF/Genotyped_filterOut_clean VCF/Genotyped_filterOut_clean_maf005 0.05 0 0.1 0.2
         """
 
 rule hapmap3:
@@ -389,8 +390,8 @@ rule hapmap3:
         bim_maf = rules.qc_plink.output.bim_maf
 
     output:
-        hm3_list = "VCF/overlap_maf001_hapmap3_RNA_SNPs.list",
-        hm3_bim = "VCF/Genotyped_filterOut_clean_maf001_hm3.bim"
+        hm3_list = "VCF/overlap_maf005_hapmap3_RNA_SNPs.list",
+        hm3_bim = "VCF/Genotyped_filterOut_clean_maf005_hm3.bim"
 
     params:
         hapmap3 = config["hapmap3"]
@@ -405,7 +406,7 @@ rule hapmap3:
 
         Rscript scripts/hapmap3_overlap.R RNA_ChrID.txt {params.hapmap3}
 
-        plink --bfile ./VCF/Genotyped_filterOut_clean_maf001 --extract {output.hm3_list} --make-bed --out ./VCF/Genotyped_filterOut_clean_maf001_hm3
+        plink --bfile ./VCF/Genotyped_filterOut_clean_maf005 --extract {output.hm3_list} --make-bed --out ./VCF/Genotyped_filterOut_clean_maf005_hm3
         """
 
 rule ld:
@@ -413,7 +414,7 @@ rule ld:
         hm3_bim = rules.hapmap3.output.hm3_bim
 
     output:
-        ld_bim = "VCF/Genotyped_filterOut_clean_maf001_hm3_ld005.bim"
+        ld_bim = "VCF/Genotyped_filterOut_clean_maf005_hm3_ld005.bim"
 
     params:
         ld_reg = config["ld_regions"]
@@ -422,7 +423,7 @@ rule ld:
 
     shell:
         """
-        sh scripts/ld_thinning_pruning.sh VCF/Genotyped_filterOut_clean_maf001_hm3 VCF/Genotyped_filterOut_clean_maf001_hm3_ld005 1000 50 0.05 {params.ld_reg}
+        sh scripts/ld_thinning_pruning.sh VCF/Genotyped_filterOut_clean_maf005_hm3 VCF/Genotyped_filterOut_clean_maf005_hm3_ld005 1000 50 0.05 {params.ld_reg}
         """
 
 rule pca:
@@ -438,5 +439,5 @@ rule pca:
 
     shell:
         """
-        {params.flashpca} --bfile VCF/Genotyped_filterOut_clean_maf001_hm3_ld005 -d 10 --outpc VCF/RG-StraP_pcs.txt --outpve VCF/RG-StraP_pve.txt --outvec VCF/RG-StraP_eigenvectors.txt --outval VCF/RG-StraP_eigenvalues.txt
+        {params.flashpca} --bfile VCF/Genotyped_filterOut_clean_maf005_hm3_ld005 -d 10 --outpc VCF/RG-StraP_pcs.txt --outpve VCF/RG-StraP_pve.txt --outvec VCF/RG-StraP_eigenvectors.txt --outval VCF/RG-StraP_eigenvalues.txt
         """

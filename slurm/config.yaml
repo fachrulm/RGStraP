@@ -1,6 +1,6 @@
 ---
 snakefile: Snakefile
-latency-wait: 60
+latency-wait: 90
 reason: True
 show-failed-logs: True
 keep-going: True
@@ -13,10 +13,11 @@ jobname: "{rule}.{jobid}"              # Provide a custom name for the jobscript
 max-jobs-per-second: 1                 #Maximal number of cluster/drmaa jobs per second, default is 10, fractions allowed.
 max-status-checks-per-second: 10       #Maximal number of job status checks per second, default is 10
 jobs: 11                              #Use at most N CPU cluster/cloud jobs in parallel.
-cluster: "sbatch --output=\"jobs/{rule}_slurm_%x_%j.out\" --error=\"jobs/{rule}_slurm_%x_%j.log\" --mem={resources.mem_mb} --cpus-per-task={threads}"
+cluster: "sbatch -p {resources.partition} --output=\"jobs/{rule}_slurm_%x_%j.out\" --error=\"jobs/{rule}_slurm_%x_%j.log\" --mem={resources.mem_mb} --cpus-per-task={threads} --time={resources.runtime}"
 
 # Job resources
 ## For some reasons time needs quotes to be read by snakemake
 default-resources:
   - partition={INSERT_CLUSTER_NAME}
   - mem_mb=4000
+  - runtime="24h"
