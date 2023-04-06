@@ -4,7 +4,7 @@
 
 p1=$1
 STAR_genome=$2 #path to STAR-indexed genome build
-sjfile=$3 #splice junction file from first-pass mapping
+sjfile=$(cat $3) #splice junction files from first-pass mapping
 mkdir -p ./2_mapped
 
 sname=${p1##*/}
@@ -16,4 +16,4 @@ STAR --runThreadN 12 --runMode alignReads \
 	--genomeDir ${STAR_genome} \
 	--outSAMmapqUnique 60 \
 	--readFilesIn $i ${p1%_1_val_1_clumped.fq.gz}_2_val_2_clumped.fq.gz \
-	--sjdbFileChrStartEnd ${sjfile}
+	--sjdbFileChrStartEnd $sjfile

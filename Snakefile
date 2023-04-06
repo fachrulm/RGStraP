@@ -41,6 +41,7 @@ rule all:
         recaltab = expand("bqsr/{name}recal.table", name = SAMPLES["name"]),
         finalbam = expand("bqsr/{name}final.bam", name = SAMPLES["name"]),
         firvcf = expand("vars/{name}first.g.vcf.gz", name = SAMPLES["name"]),
+        sj_list = "pass1_sj.list",
         gvcf_list = "Merged.gvcf.list",
         genotyped = "VCF/Genotyped_raw.vcf.gz",
         varFil = "VCF/Genotyped_filterKeep.vcf.gz",
@@ -118,11 +119,24 @@ rule onePass_STAR:
         sh scripts/1pass_STAR.sh {input.clumped_1} {params.genome}
         """
 
+# Get all splice junction files from first-pass mapping before second-pass
+rule getSJs:
+    input:
+        expand("1_mapped/{name}SJ.out.tab", name = SAMPLES["name"])
+
+    output:
+        sj_list = "pass1_sj.list"
+
+    shell:
+        """
+        echo "{input}" > {output.sj_list}
+        """
+
 # Run second-pass mapping of RNA-seq files to reference genome with STAR
 rule twoPass_STAR:
     input:
         clumped_1 = rules.clumpify.output.clumped_1,
-        pass1_sj = rules.onePass_STAR.output.pass1_sj
+        sj_list = rules.getSJs.output.sj_list
 
     output:
         pass2_bam = "2_mapped/{name}Aligned.sortedByCoord.out.bam",
@@ -139,7 +153,7 @@ rule twoPass_STAR:
 
     shell:
         """
-        sh scripts/2pass_STAR.sh {input.clumped_1} {params.genome} {input.pass1_sj}
+        sh scripts/2pass_STAR.sh {input.clumped_1} {params.genome} {input.sj_list}
         """
 
 # Add read group information to BAM files, which are necessary during GATK's variant calling process.
