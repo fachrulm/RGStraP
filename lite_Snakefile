@@ -1,0 +1,115 @@
+## RGStraP
+
+import itertools
+import pandas as pd
+import numpy as np
+
+configfile: "config/lite_config.yaml"
+
+# create folder for cluster use
+onstart:
+    print("##### Creating profile pipeline #####\n") 
+    print("\t Creating jobs output folder...\n")
+    shell("mkdir -p jobs/")
+
+# Paths to 
+
+rule all:
+    input:
+        bim_pre = "VCF/Genotyped_filterOut.bim",
+        bim_clean = "VCF/Genotyped_filterOut_clean.bim",
+        bim_maf = "VCF/Genotyped_filterOut_clean_maf005.bim",
+        hm3_list = "VCF/overlap_maf005_hapmap3_RNA_SNPs.list",
+        hm3_bim = "VCF/Genotyped_filterOut_clean_maf005_hm3.bim",
+        ld_bim = "VCF/Genotyped_filterOut_clean_maf005_hm3_ld005.bim",
+        pcs = "VCF/RG-StraP_pcs.txt",
+        eigenvalues = "VCF/RG-StraP_eigenvalues.txt"
+    output: touch("all.done")
+
+rule plink_clean:
+    input:
+        varSel = config["input_vcf"]
+
+    output:
+        bim_pre = "VCF/Genotyped_filterOut.bim",
+        bim_clean = "VCF/Genotyped_filterOut_clean.bim"
+
+    threads: 1
+
+    shell:
+        """
+        plink --vcf {input.varSel} --make-bed --out VCF/Genotyped_filterOut
+        sh scripts/idtochrpos.sh {output.bim_pre}
+        Rscript scripts/clean_data.R VCF/Genotyped_filterOut VCF/Genotyped_filterOut_clean
+        """
+
+rule qc_plink:
+    input:
+        bim_clean = rules.plink_clean.output.bim_clean
+        
+    output:
+        bim_maf = "VCF/Genotyped_filterOut_clean_maf005.bim"
+
+    threads: 1
+
+    shell:
+        """
+        sh scripts/qc_all_basic.sh VCF/Genotyped_filterOut_clean VCF/Genotyped_filterOut_clean_maf005 0.05 0 0.1 0.2
+        """
+
+rule hapmap3:
+    input:
+        bim_maf = rules.qc_plink.output.bim_maf
+
+    output:
+        hm3_list = "VCF/overlap_maf005_hapmap3_RNA_SNPs.list",
+        hm3_bim = "VCF/Genotyped_filterOut_clean_maf005_hm3.bim"
+
+    params:
+        hapmap3 = config["hapmap3"]
+
+    threads: 1
+
+    shell:
+        """
+        cut -f1,4,5,6 {input.bim_maf} > temp_ChrID.txt
+        echo -e "CHROM\tPOS\tREF\tALT" | cat - temp_ChrID.txt > RNA_ChrID.txt
+        rm ./temp_ChrID.txt
+
+        Rscript scripts/hapmap3_overlap.R RNA_ChrID.txt {params.hapmap3}
+
+        plink --bfile ./VCF/Genotyped_filterOut_clean_maf005 --extract {output.hm3_list} --make-bed --out ./VCF/Genotyped_filterOut_clean_maf005_hm3
+        """
+
+rule ld:
+    input:
+        hm3_bim = rules.hapmap3.output.hm3_bim
+
+    output:
+        ld_bim = "VCF/Genotyped_filterOut_clean_maf005_hm3_ld005.bim"
+
+    params:
+        ld_reg = config["ld_regions"]
+
+    threads: 1
+
+    shell:
+        """
+        sh scripts/ld_thinning_pruning.sh VCF/Genotyped_filterOut_clean_maf005_hm3 VCF/Genotyped_filterOut_clean_maf005_hm3_ld005 1000 50 0.05 {params.ld_reg}
+        """
+
+rule pca:
+    input:
+        ld_bim = rules.ld.output.ld_bim
+
+    output:
+        pcs = "VCF/RG-StraP_pcs.txt",
+        eigenvalues = "VCF/RG-StraP_eigenvalues.txt"
+
+    params:
+        flashpca = config["flashpca"]
+
+    shell:
+        """
+        {params.flashpca} --bfile VCF/Genotyped_filterOut_clean_maf005_hm3_ld005 -d 10 --outpc VCF/RG-StraP_pcs.txt --outpve VCF/RG-StraP_pve.txt --outvec VCF/RG-StraP_eigenvectors.txt --outval VCF/RG-StraP_eigenvalues.txt
+        """

@@ -1,0 +1,15 @@
+####--------------------------------------------------------###
+## Please update this file with project-specific information ##
+###############################################################
+
+## Path to vcf file to capture RG-PCs from
+input_vcf: {path to variant calling file (vcf) after initial filtering}
+
+## List of chromosome positions of HapMap3 SNPs
+hapmap3: ./config/lifted_37to38_hapmap3_clean_maf001_noHLA.txt
+
+## List of high LD regions for GRCh38
+ld_regions: ./config/noChr_high-LD-regions-hg38-GRCh38.txt
+
+## Path to flashpca
+flashpca: {path to tool file | version 2.0}
