@@ -69,4 +69,10 @@ snakemake -n
 # To run pipeline on slurm
 snakemake --profile slurm
 ```
-
+### Running the pipeline from VCF file (lite version)
+RGStraP can also be used to capture RG-PCs from existing VCF files via the lite version.
+- Make sure to modify the `config/lite_config.yaml` file accordingly.
+```
+# To run lite pipeline on slurm
+snakemake -s lite_Snakefile --cores 2
+```
