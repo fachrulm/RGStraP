@@ -76,3 +76,5 @@ RGStraP can also be used to capture RG-PCs from existing VCF files via the lite 
 # To run lite pipeline on slurm
 snakemake -s lite_Snakefile --cores 2
 ```
+## License
+Apache 2.0 License
