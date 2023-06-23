@@ -78,6 +78,8 @@ rule pre_QC:
         """
 
 # Run BBMap's Clumpify to remove optical duplicates pre-mapping
+## Please adjust the 'dupedist' value according to your sequencing platform in the scripts/clumpify_OpDup.sh file
+## (recommendations included within the script).
 rule clumpify:
     input:
         trimmed_1 = rules.pre_QC.output.trimmed_1
@@ -177,6 +179,7 @@ rule addRG:
         sh scripts/addRG.sh {input.pass2_bam} {params.meta} scripts/PICARD_addRG.sh
         """
 
+# Filter BAM files based on quality with samtools
 rule filterBAM:
     input:
         withRG = rules.addRG.output.withRG
@@ -194,6 +197,7 @@ rule filterBAM:
         samtools view -bq 20 {input.withRG} > {output.filt}
         """
 
+# Sort BAM files, then mark and remove duplicates
 rule sortMarkDup:
     input:
         filt = rules.filterBAM.output.filt
@@ -211,6 +215,7 @@ rule sortMarkDup:
         sh scripts/sortMarkDup.sh {input.filt}
         """
 
+# Splits reads that contain Ns in their cigar string
 rule splitN:
     input:
         nodup = rules.sortMarkDup.output.nodup
@@ -231,6 +236,7 @@ rule splitN:
         sh scripts/splitncigar.sh {input.nodup} {params.genome_fa}
         """
 
+# Perform base recalibration (get the recalibration table)
 rule baseRecalib:
     input:
         nodup = rules.splitN.output.ncigar
@@ -253,6 +259,7 @@ rule baseRecalib:
         sh scripts/base_recalibrator.sh {input.nodup} {params.genome_fa} {params.indel1} {params.indel2}
         """
 
+# Apply base recalibration
 rule applybqsr:
     input:
         nodup = rules.splitN.output.ncigar,
@@ -274,6 +281,7 @@ rule applybqsr:
         sh scripts/apply_bqsr.sh {input.nodup} {params.genome_fa} {input.recaltab}
         """
 
+# Call germline SNPs and indels via local re-assembly of haplotypes
 rule haploCall:
     input:
         finalbam = rules.applybqsr.output.finalbam
@@ -294,6 +302,7 @@ rule haploCall:
         sh scripts/haploCall.sh {input.finalbam} {params.genome_fa}
         """
 
+# Get list of GVCF files for merging
 rule getListGeno:
     input:
         expand("vars/{name}first.g.vcf.gz", name = SAMPLES["name"])
@@ -306,6 +315,7 @@ rule getListGeno:
         echo "{input}" | sed 's/vars/-V vars/g' > {output.gvcf_list}
         """
 
+# Merge GVCFs and call genotype
 rule genotype:
     input:
         gvcf_list = rules.getListGeno.output.gvcf_list
@@ -328,6 +338,7 @@ rule genotype:
         sh scripts/genotypegvcfs.sh {input.gvcf_list} {params.genome_fa} {params.interval}
         """
 
+# Initial filtering of variants called
 rule filGen:
     input:
         genotyped = rules.genotype.output.genotyped
@@ -348,6 +359,7 @@ rule filGen:
         sh scripts/variantFil.sh {input.genotyped} {params.genome_fa}
         """
 
+# Select variants based on previous filtering
 rule selGen:
     input:
         varFil = rules.filGen.output.varFil
@@ -368,6 +380,7 @@ rule selGen:
         sh scripts/variantSel.sh {input.varFil} {params.genome_fa}
         """
 
+# Clean up VCF file
 rule plink_clean:
     input:
         varSel = rules.selGen.output.varSel
@@ -385,6 +398,7 @@ rule plink_clean:
         Rscript scripts/clean_data.R VCF/Genotyped_filterOut VCF/Genotyped_filterOut_clean
         """
 
+# Filter based on MAF<0.05
 rule qc_plink:
     input:
         bim_clean = rules.plink_clean.output.bim_clean
@@ -399,6 +413,7 @@ rule qc_plink:
         sh scripts/qc_all_basic.sh VCF/Genotyped_filterOut_clean VCF/Genotyped_filterOut_clean_maf005 0.05 0 0.1 0.2
         """
 
+# Compare with HapMap3 reads and take overlaps
 rule hapmap3:
     input:
         bim_maf = rules.qc_plink.output.bim_maf
@@ -423,6 +438,7 @@ rule hapmap3:
         plink --bfile ./VCF/Genotyped_filterOut_clean_maf005 --extract {output.hm3_list} --make-bed --out ./VCF/Genotyped_filterOut_clean_maf005_hm3
         """
 
+# Filter based on ld<0.05
 rule ld:
     input:
         hm3_bim = rules.hapmap3.output.hm3_bim
@@ -440,6 +456,7 @@ rule ld:
         sh scripts/ld_thinning_pruning.sh VCF/Genotyped_filterOut_clean_maf005_hm3 VCF/Genotyped_filterOut_clean_maf005_hm3_ld005 1000 50 0.05 {params.ld_reg}
         """
 
+# Generate genetic PCs
 rule pca:
     input:
         ld_bim = rules.ld.output.ld_bim
