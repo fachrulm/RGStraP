@@ -1,5 +1,5 @@
 # RGStraP
-[![Snakemake](https://img.shields.io/badge/snakemake-≥6.15.5-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
+[![DOI](https://zenodo.org/badge/443880532.svg)](https://zenodo.org/badge/latestdoi/443880532) [![Snakemake](https://img.shields.io/badge/snakemake-≥6.15.5-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
 
 **RGStraP** (***R***NA-seq-based ***G***enetic ***Stra***tification ***P***Cs) is a bioinformatics pipeline for calculating Principal Components (PCs) showing genetic stratification from RNA-seq data. The pipeline mainly utilizes the variant calling capabilities of [GATK4](https://gatk.broadinstitute.org/hc/en-us/articles/360035531192-RNAseq-short-variant-discovery-SNPs-Indels-) and the principal component analysis (PCA) of [FlashPCA2](https://github.com/gabraham/flashpca). The pipeline was built using [snakemake](https://snakemake.github.io/).
 
