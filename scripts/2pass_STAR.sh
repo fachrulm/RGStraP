@@ -15,5 +15,5 @@ STAR --runThreadN 12 --runMode alignReads \
 	--outFileNamePrefix ./2_mapped/${sname%_1_val_1_clumped.fq.gz}_ \
 	--genomeDir ${STAR_genome} \
 	--outSAMmapqUnique 60 \
-	--readFilesIn $i ${p1%_1_val_1_clumped.fq.gz}_2_val_2_clumped.fq.gz \
+	--readFilesIn $p1 ${p1%_1_val_1_clumped.fq.gz}_2_val_2_clumped.fq.gz \
 	--sjdbFileChrStartEnd $sjfile
