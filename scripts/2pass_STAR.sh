@@ -16,4 +16,4 @@ STAR --runThreadN 12 --runMode alignReads \
 	--genomeDir ${STAR_genome} \
 	--outSAMmapqUnique 60 \
 	--readFilesIn $p1 ${p1%_1_val_1_clumped.fq.gz}_2_val_2_clumped.fq.gz \
-	--sjdbFileChrStartEnd $sjfile
+	--sjdbFileChrStartEnd $(cat ${sjfile})
