@@ -14,6 +14,8 @@ Muhamad Fachrul, [mfachrul@student.unimelb.edu.au](mailto:mfachrul@student.unime
 ## Citation
 Fachrul, M., Karkey, A., Shakya, M., Judd, L. M., Harshegyi, T., Sim, K. S., Tonks, S., Dongol, S., Shrestha, R., Salim, A., Baker, S., Pollard, A. J., Khor, C. C., Dolecek, C., Basnyat, B., Dunstan, S. J., Holt, K. E., & Inouye, M. (2023). Direct inference and control of genetic population structure from RNA sequencing data. Communications Biology, 6(1), Article 1. https://doi.org/10.1038/s42003-023-05171-9
 
+#### Highlighted by Health Data Research UK (HDRUK): [Understanding genetic diversity through RNA data to inform future research](https://www.hdruk.org/case-studies/understanding-genetic-diversity-through-rna-data-to-inform-future-research/)
+
 ## Requirements
 Most of the dependencies (including [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) v0.11.8, [Trim galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) v0.6.0, [BBMap](https://github.com/BioInfoTools/BBMap) (for Clumpify.sh), [STAR](https://github.com/alexdobin/STAR) v2.7.10a, [Picard](https://broadinstitute.github.io/picard/) v2.24.0, [Samtools](http://www.htslib.org/) v1.8, [GATK4](https://gatk.broadinstitute.org/hc/en-us/articles/360036194592-Getting-started-with-GATK4) v4.0.6.0, and [PLINK 1.9](https://www.cog-genomics.org/plink/) v1.90b6.16) are included in the setup.
 
